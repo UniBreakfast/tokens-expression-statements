@@ -93,17 +93,17 @@ null  undefined - singular values of monotypes
 
 //? literals are basically "produce a value" commands
 
-42  // number literal
+42, 3.14, 12e9, 2e-5, 1_000_000, 0b10, 0o777, 0xFF  // number literals
 NaN  // NaN
 Infinity  // Infinity
 1234567890n  // bigint literal
-"lit"  // string literal
-false  // boolean literal
+"lit", 'eral'  // string literals
+true, false  // boolean literal
 null  // null
-undefined  // undefined
-;
+undefined;  // undefined
 []  // empty array literal
 {}  // empty object literal
+/^(ab+|c*)\d?[ef]$/gi  // regular expression literal (single js token but multiple regex tokens)
 
 
 //? single identifiers are "read binding value" commands
@@ -191,6 +191,7 @@ a.b(c); a.b(c, d)  // выражения вызова метода c аргум�
 new A; new A()  // выражение создания экземпляра типа (класса)
 super()  // выражение инициализации экземпляра праконструктором
 import(a)  // выражение импорта модуля
+await p  // выражение ожидания завершения выполнения промиса
 a << b  // выражение битового сдвига влево
 a >> b  // выражение битового сдвига вправо
 a >>> b  // выражение битового сдвига вправо с потерей знака
@@ -271,9 +272,10 @@ delete a.b  // property deletion expression
 delete a[b]  // property deletion via key (index) expression
 a(b); a(b, c)  // function call expression with arguments
 a.b(c); a.b(c, d)  // method call expression with arguments
-new A; new A()  // object instantiation expression
+new A; new A(b, c)  // object (class) instantiation expression
 super()  // extended class instantiation expression
 import(a)  // module import expression
+await p  // await promise result expression
 a << b  // bit shift left expression
 a >> b  // bit shift right expression
 a >>> b  // bit shift right expression with sign drop
@@ -303,3 +305,34 @@ a.b(...c);  // method call expression with iterable arguments spread
 {a: b} = c  // object destructuring expression with differently named property/variable
 )
 [[a]] = b; [{a}] = b, {a: [b]} = c, {a: {b}} = c  // deep iterable/object destructuring expression
+
+
+//* complex literals (more than one token) are also compound expressions:
+
+
+`interpolated ${a} and ${b}`, `no interpolation`  // template string literals
+function f() {}; function f(a, b) {}  // classic function literal
+(
+function () {}, function (a, b) {}  // anonymous classic function literal
+)
+a => b; () => {}; (a, b) => {}; () => c  // arrow function literal
+[a, b, c];  // array literal
+(
+{a: b, c: d}  // object literal
+);
+{a, b} // shorthand object literal (values provided by bindings with same names)
+(
+{m() {}}  // object literal with method definition (shorthand)
+)  
+function C() {}; function C(a, b) {}  // function constructor literal
+class C {}; class C extends B {}  // class literal
+class C {constructor() {}; m() {}; static s() {}; get g() {}; set t(v) {}; p = a }  // class literal with 
+// ... optional constructor,methods, static methods, getters, setters and property initializers
+async function f() {}; async () => {}  // async function literals (classic and arrow)
+(
+{async m() {}}, class C {async m() {}; static async s() {}}  // object/class literals with async method definitions
+)(
+function* f() {}, function* () {}  // generator function literals
+)(
+{*m() {}}, class C {*m() {}; static *s() {}}  // object/class literals with generator method definitions
+)
