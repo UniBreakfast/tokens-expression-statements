@@ -192,6 +192,7 @@ new A; new A()  // выражение создания экземпляра ти
 super()  // выражение инициализации экземпляра праконструктором
 import(a)  // выражение импорта модуля
 await p  // выражение ожидания завершения выполнения промиса
+yield; yield a  // выражения генерации значения (только в контексте функции-генератора)
 a << b  // выражение битового сдвига влево
 a >> b  // выражение битового сдвига вправо
 a >>> b  // выражение битового сдвига вправо с потерей знака
@@ -276,6 +277,7 @@ new A; new A(b, c)  // object (class) instantiation expression
 super()  // extended class instantiation expression
 import(a)  // module import expression
 await p  // await promise result expression
+yield; yield a  // generator yield expression
 a << b  // bit shift left expression
 a >> b  // bit shift right expression
 a >>> b  // bit shift right expression with sign drop
@@ -310,7 +312,7 @@ a.b(...c);  // method call expression with iterable arguments spread
 //* complex literals (more than one token) are also compound expressions:
 
 
-`interpolated ${a} and ${b}`, `no interpolation`  // template string literals
+`interpolated ${a} and ${b}`, `no interpolation`  // template string literals with or without interpolation
 function f() {}; function f(a, b) {}  // classic function literal
 (
 function () {}, function (a, b) {}  // anonymous classic function literal
@@ -332,7 +334,40 @@ async function f() {}; async () => {}  // async function literals (classic and a
 (
 {async m() {}}, class C {async m() {}; static async s() {}}  // object/class literals with async method definitions
 )(
-function* f() {}, function* () {}  // generator function literals
+function* g() {}, function* () {}  // generator function literals
 )(
 {*m() {}}, class C {*m() {}; static *s() {}}  // object/class literals with generator method definitions
 )
+
+
+//* statements:
+
+
+//? statements are made with keywords:
+
+
+var a = b;  // variable declaration statement
+const a = b;  // constant declaration statement
+let a = b;  // block scope variable declaration statement
+function f() {}  // function declaration statement (if not in expression position)
+class C {}  // class declaration statement (if not in expression position)
+if (a) {}  // if statement
+if (a) {} else {}; if (a) {} else if (b) {} else {}  // if-else statement of arbitrary complexity
+switch (a) {}; switch (a) {case b: c; default: d}  // switch statements
+while (a) {}  // while statement
+do {} while (a)  // do-while statement
+for (a; b; c) {}; for ( ; ; ) {}; for ( ; ; ); // classic for statements
+for (let a of b) {}; for (a of b) {} // for-of statements
+for (let a in b) {}; for (a in b) {} // for-in statements
+break;  // break statement (only allowed in switch, for, while, do-while)
+continue;  // continue statement (only allowed in for, while, do-while)
+return;  // return statement (only allowed in function)
+throw a;  // throw statement (only allowed in function)
+try {} catch (a) {}; try {} catch {}; try {} finally {}; try {} catch {} finally {}  // try-catch-finally statements
+import a from "b"; import * as a from "b"; import "b";  // import statements
+import {a} from "b"; import {a as b} from "b";  // partial (named) import statement (without and with renaming)
+export default a;  // default export statements
+export {a}; export {a as b};  // named export statement (without and with renaming)
+export const a = b; export let a = b; export function f() {};  // export statement with declarations
+export * from "b";  // export all from module
+export {a} from "b"; export {a as b} from "b";  // partial (named) export statement (without and with renaming)
